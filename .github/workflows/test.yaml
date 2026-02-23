@@ -45,7 +45,10 @@ jobs:
   # JOB 2: Build and push the Docker image to Docker Hub
   # ─────────────────────────────────────────────
   docker-build-and-push:
-    runs-on: ubuntu-latest   # Use a fresh Ubuntu runner for Docker operations
+    runs-on: ubuntu-latest     # Use a fresh Ubuntu runner for Docker operations
+    needs: build-and-test      # ← Wait for tests to PASS before running this job
+                               #   Without this, both jobs run in PARALLEL (default behavior)
+                               #   This ensures we never push a broken Docker image
 
     steps:
     # Step 1: Check out the repository so the Dockerfile and app code are available
