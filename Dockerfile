@@ -7,7 +7,7 @@ WORKDIR /app
 COPY requirements.txt /app/requirements.txt
 
 # INSTALL DEPENDENCIES
-RUN pip install --no-cache-dir -r requirement.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # COPY APPLICATION CODE
 COPY app.py /app/app.py
