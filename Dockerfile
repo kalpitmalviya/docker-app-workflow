@@ -4,7 +4,7 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # COPY REQUIREMENT FILE
-COPY requirement.txt /app/requirement.txt
+COPY requirements.txt /app/requirements.txt
 
 # INSTALL DEPENDENCIES
 RUN pip install --no-cache-dir -r requirement.txt
