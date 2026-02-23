@@ -1,0 +1,71 @@
+# Name of the GitHub Actions workflow — shown in the Actions tab of your GitHub repo
+name: CI/CD for dockerized Flask app
+
+# Triggers: defines WHEN this workflow should run
+on:
+  push:
+    branches: [ "main" ]   # Run on every push to the 'main' branch
+  pull_request:
+    branches: [ "main" ]   # Run when a pull request targets the 'main' branch
+
+# Jobs: the actual units of work to execute
+jobs:
+
+  # ─────────────────────────────────────────────
+  # JOB 1: Run Python tests using pytest
+  # ─────────────────────────────────────────────
+  build-and-test:
+    runs-on: ubuntu-latest   # Use the latest Ubuntu runner provided by GitHub
+
+    steps:
+    # Step 1: Check out the repository code so subsequent steps can access it
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Step 2: Install the specified Python version on the runner
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"   # Pin to Python 3.10 for consistency
+
+    # Step 3: Upgrade pip and install required test dependencies
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip   # Ensure pip is up to date
+        pip install pytest                    # Install pytest for running tests
+
+    # Step 4: Run all tests discovered by pytest in the repository
+    - name: Test with pytest
+      run: |
+        pytest   # Discovers and runs test files (e.g., test_app.py)
+
+  # ─────────────────────────────────────────────
+  # JOB 2: Build and push the Docker image to Docker Hub
+  # ─────────────────────────────────────────────
+  docker-build-and-push:
+    runs-on: ubuntu-latest   # Use a fresh Ubuntu runner for Docker operations
+
+    steps:
+    # Step 1: Check out the repository so the Dockerfile and app code are available
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Step 2: Build a Docker image using the Dockerfile in the repo root
+    # The image is tagged as 'docker-app-workflow'
+    - name: Build Docker image
+      run: docker build -t docker-app-workflow .
+
+    # Step 3: Log in to Docker Hub using credentials stored as GitHub Secrets
+    # DOCKER_USERNAME and DOCKER_PASSWORD must be set in: Settings > Secrets > Actions
+    - name: Login to Docker Hub
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+    # Step 4: Push the built image to Docker Hub under your account
+    - name: Push Docker image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/docker-app-workflow:latest
+      id: push-image
+
+    # Step 5: Image digest
+    - name: Image digest
+      run: echo ${{ steps.push-image.outputs.digest }}
+    
