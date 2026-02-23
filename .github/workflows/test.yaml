@@ -57,7 +57,7 @@ jobs:
 
     # Step 2: Build a Docker image using the Dockerfile in the repo root
     - name: Build Docker image
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/docker-app-workflow:latest .
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/docker-app-workflow:$(date +%s) .
 
     # Step 3: Log in to Docker Hub using credentials stored as GitHub Secrets
     # DOCKER_USERNAME and DOCKER_PASSWORD must be set in: Settings > Secrets > Actions
@@ -66,7 +66,7 @@ jobs:
 
     # Step 4: Push the built image to Docker Hub under your account
     - name: Push Docker image
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/docker-app-workflow:latest
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/docker-app-workflow:$(date +%s)
       id: push-image
 
     # Step 5: Image digest
