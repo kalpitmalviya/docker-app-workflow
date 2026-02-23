@@ -58,7 +58,7 @@ jobs:
     # Step 2: Build a Docker image using the Dockerfile in the repo root
     # The image is tagged as 'docker-app-workflow'
     - name: Build Docker image
-      run: docker build -t docker-app-workflow .
+      run: docker build -t docker-app-workflow:latest .
 
     # Step 3: Log in to Docker Hub using credentials stored as GitHub Secrets
     # DOCKER_USERNAME and DOCKER_PASSWORD must be set in: Settings > Secrets > Actions
