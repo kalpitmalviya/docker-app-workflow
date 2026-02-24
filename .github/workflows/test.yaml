@@ -39,7 +39,7 @@ jobs:
     # Step 4: Run all tests discovered by pytest in the repository
     - name: Test with pytest
       run: |
-        pytest   # Discovers and runs test files (e.g., test_app.py)
+        pytest -sv # Discovers and runs test files (e.g., test_app.py)
 
   # ─────────────────────────────────────────────
   # JOB 2: Build and push the Docker image to Docker Hub
